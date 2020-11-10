@@ -7,7 +7,18 @@ class Deck
     @cards = set_cards
   end
 
+  def shuffle
+    shuffled = []
+    until @cards.empty?
+      card = @cards.sample
+      @cards.delete(card)
+      shuffled << card
+    end
+    @cards = shuffled
+  end
+
   private
+
   def set_cards
     @cards = []
     suits = %w(Spades Clubs Diamonds Hearts)
@@ -17,6 +28,6 @@ class Deck
         @cards << Card.new(type, suit)
       end
     end
-    p @cards
+    @cards
   end
 end
