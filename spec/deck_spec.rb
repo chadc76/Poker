@@ -16,4 +16,12 @@ describe Deck do
       end
     end
   end
+
+  describe "#shuffle" do
+    it "shuffles the deck of cards" do
+      unshuffled = deck.cards.dup
+      deck.shuffle 
+      expect(deck.cards).to_not eq(unshuffled)
+    end
+  end
 end
