@@ -63,4 +63,26 @@ describe Deck do
       expect { deck.take(2) }.to raise_error("not enough cards")
     end
   end
+
+  describe "#return" do 
+    let(:more_cards) do
+      [ double("card", :suit => :hearts, :value => :four),
+        double("card", :suit => :hearts, :value => :five),
+        double("card", :suit => :hearts, :value => :six) ]
+    end
+
+    it "should return cards to the deck" do
+      deck.return(more_cards)
+      expect(deck.count).to eq(6)
+    end
+
+    it "should add new cards to the bottom of the deck" do 
+      deck.return(more_cards)
+      deck.take(3)
+
+      expect(deck.take(1)).to eq(more_cards[0..0])
+      expect(deck.take(1)).to eq(more_cards[1..1])
+      expect(deck.take(1)).to eq(more_cards[2..2])
+    end
+  end
 end
