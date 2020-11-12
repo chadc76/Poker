@@ -24,23 +24,43 @@ describe Deck do
   describe "#initialize" do
     it "by defualt fills cards with 52 cards" do
       deck = Deck.new 
-      expect(deck.cards.count).to eq(52)
+      expect(deck.count).to eq(52)
     end
 
     it "should be able to take in an array of cards" do
       deck = Deck.new(cards)
-      expect(deck.cards.count).to eq(3)
+      expect(deck.count).to eq(3)
     end
   end
 
-  subject(:deck) { Deck.new }
+  subject(:deck) { Deck.new(cards.dup) }
+
+  it "should not show cards" do
+    expect(deck).to_not respond_to(:cards)
+  end
 
   describe "#shuffle" do
-    
     it "shuffles the deck of cards" do
-      unshuffled = deck.cards.dup
+      unshuffled = deck.dup
       deck.shuffle 
-      expect(deck.cards).to_not eq(unshuffled)
+      expect(deck).to_not eq(unshuffled)
+    end
+  end
+
+  describe "#take" do
+    it "takes a specified number of cards off the top of the deck" do
+      expect(deck.take(1)).to eq(cards[0..0])
+      expect(deck.take(2)).to eq(cards[1..2])
+    end
+
+    it "removes cards from deck" do 
+      deck.take(2)
+      expect(deck.count).to eq(1)
+    end
+
+    it "doesn't allow you to take more cards then are left in deck" do
+      deck.take(2)
+      expect { deck.take(2) }.to raise_error("not enough cards")
     end
   end
 end
