@@ -1,10 +1,21 @@
-require_relative 'card.rb'
+require_relative './card'
 
 class Deck
+
+  def self.all_cards
+    deck = []
+    Card.suits.each do |suit|
+      Card.values.each do |value|
+        deck << Card.new(value, suit)
+      end
+    end
+    deck
+  end
+
   attr_reader :cards
 
-  def initialize
-    @cards = set_cards
+  def initialize(cards = Deck.all_cards)
+    @cards = cards
   end
 
   def shuffle
@@ -15,19 +26,5 @@ class Deck
       shuffled << card
     end
     @cards = shuffled
-  end
-
-  private
-
-  def set_cards
-    @cards = []
-    suits = %w(Spades Clubs Diamonds Hearts)
-    types = %w(A 2 3 4 5 6 7 8 9 10 J Q K)
-    suits.each do |suit|
-      types.each do |type|
-        @cards << Card.new(type, suit)
-      end
-    end
-    @cards
   end
 end
