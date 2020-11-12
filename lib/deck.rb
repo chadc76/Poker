@@ -34,4 +34,8 @@ class Deck
     raise "not enough cards" if n > @cards.count
     @cards.shift(n)
   end
+
+  def return(cards)
+    @cards.push(*cards)
+  end
 end
