@@ -44,4 +44,10 @@ class Card
     @value = value
     @suit = suit
   end
+
+  def <=>(other_card)
+    return -1 if Card.values.index(value) < Card.values.index(other_card.value)
+    return 1 if Card.values.index(value) > Card.values.index(other_card.value)
+    0 
+  end
 end
