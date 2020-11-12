@@ -12,10 +12,12 @@ class Deck
     deck
   end
 
-  attr_reader :cards
-
   def initialize(cards = Deck.all_cards)
     @cards = cards
+  end
+
+  def count
+    @cards.count
   end
 
   def shuffle
@@ -26,5 +28,10 @@ class Deck
       shuffled << card
     end
     @cards = shuffled
+  end
+
+  def take(n)
+    raise "not enough cards" if n > @cards.count
+    @cards.shift(n)
   end
 end
