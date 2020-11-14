@@ -49,4 +49,160 @@ describe Hand do
       expect(hand.trade_cards(old_cards, new_cards)).to eq(old_cards)
     end
   end
+
+  describe 'poker hands' do
+    let(:royal_flush) do
+      Hand.new([
+        Card.new(:ace, :spades),
+        Card.new(:king, :spades),
+        Card.new(:queen, :spades),
+        Card.new(:jack, :spades),
+        Card.new(:ten, :spades)
+      ])
+    end
+
+    let(:straight_flush) do
+      Hand.new([
+        Card.new(:eight, :spades),
+        Card.new(:seven, :spades),
+        Card.new(:six, :spades),
+        Card.new(:five, :spades),
+        Card.new(:four, :spades)
+      ])
+    end
+
+    let(:four_of_a_kind) do
+      Hand.new([
+        Card.new(:ace, :spades),
+        Card.new(:ace, :hearts),
+        Card.new(:ace, :diamonds),
+        Card.new(:ace, :clubs),
+        Card.new(:ten, :spades)
+      ])
+    end
+
+    let(:full_house) do
+      Hand.new([
+        Card.new(:ace, :spades),
+        Card.new(:ace, :clubs),
+        Card.new(:king, :spades),
+        Card.new(:king, :hearts),
+        Card.new(:king, :diamonds)
+      ])
+    end
+
+    let(:flush) do
+      Hand.new([
+        Card.new(:four, :spades),
+        Card.new(:seven, :spades),
+        Card.new(:ace, :spades),
+        Card.new(:two, :spades),
+        Card.new(:eight, :spades)
+      ])
+    end
+
+    let(:straight) do
+      Hand.new([
+        Card.new(:king, :hearts),
+        Card.new(:queen, :hearts),
+        Card.new(:jack, :diamonds),
+        Card.new(:ten, :clubs),
+        Card.new(:nine, :spades)
+      ])
+    end
+
+    let(:three_of_a_kind) do
+      Hand.new([
+        Card.new(:three, :spades),
+        Card.new(:three, :diamonds),
+        Card.new(:three, :hearts),
+        Card.new(:jack, :spades),
+        Card.new(:ten, :spades)
+      ])
+    end
+
+    let(:two_pair) do
+      Hand.new([
+        Card.new(:king, :hearts),
+        Card.new(:king, :diamonds),
+        Card.new(:queen, :spades),
+        Card.new(:queen, :clubs),
+        Card.new(:ten, :spades)
+      ])
+    end
+
+    let(:one_pair) do
+      Hand.new([
+        Card.new(:ace, :spades),
+        Card.new(:ace, :spades),
+        Card.new(:queen, :hearts),
+        Card.new(:jack, :diamonds),
+        Card.new(:ten, :hearts)
+      ])
+    end
+
+    let(:high_card) do
+      Hand.new([
+        Card.new(:two, :spades),
+        Card.new(:four, :hearts),
+        Card.new(:six, :diamonds),
+        Card.new(:nine, :spades),
+        Card.new(:ten, :spades)
+      ])
+    end
+
+    let(:hand_ranks) do
+      [
+        :royal_flush,
+        :straight_flush,
+        :four_of_a_kind,
+        :full_house,
+        :flush,
+        :straight,
+        :three_of_a_kind,
+        :two_pair,
+        :one_pair,
+        :high_card
+      ]
+    end
+
+    let!(:hands) do
+      [
+        royal_flush,
+        straight_flush,
+        four_of_a_kind,
+        full_house,
+        flush,
+        straight,
+        three_of_a_kind,
+        two_pair,
+        one_pair,
+        high_card
+      ]
+    end
+
+    describe '#rank' do 
+      it 'should identify the hand rank' do
+        hands.each_with_index do |hand, i|
+          expect(hand.rank).to eq(hand_ranks[i])
+        end
+      end
+
+      context 'when straight' do
+        let(:ace_straight) do
+          Hand.new([
+            Card.new(:ace, :hearts),
+            Card.new(:two, :spades),
+            Card.new(:three, :hearts),
+            Card.new(:four, :hearts),
+            Card.new(:five, :hearts)
+          ])
+        end
+
+        it 'should let the ace be the low card in a straight' do 
+          expect(ace_straight.rank).to eq(:straight)
+        end
+      end
+    end
+  end
 end
