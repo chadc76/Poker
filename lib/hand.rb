@@ -2,6 +2,10 @@ require_relative 'poker_hands.rb'
 
 class Hand
   include PokerHands
+
+  def self.winner(hands)
+    hands.sort.last
+  end
   
   attr_reader :cards
 
@@ -29,11 +33,11 @@ class Hand
   end
 
   def discard_cards(old_cards)
-    @cards.reject!{|card| old_cards.include?(card)}
+    @cards.reject! { |card| old_cards.include?(card) } 
   end
 
   def has_cards?(old_cards)
-    old_cards.all?{|card| @cards.include?(card)}
+    old_cards.all? { |card| @cards.include?(card) }
   end
 end
 
