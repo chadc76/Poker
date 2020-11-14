@@ -1,3 +1,5 @@
+require 'colorize'
+
 class Card
 
   SUIT_STRINGS = {
@@ -31,7 +33,7 @@ class Card
     VALUES_STRINGS.keys
   end
 
-  def self.Royal_values
+  def self.royal_values
     VALUES_STRINGS.keys[-5..-1]
   end
 
@@ -43,6 +45,16 @@ class Card
     end
     @value = value
     @suit = suit
+  end
+
+  def to_s
+    color = suit == :spades || suit == :clubs ? :black : :red
+    string = VALUES_STRINGS[value] + SUIT_STRINGS[suit]
+    string.colorize(:color => color, :background => :white)
+  end
+
+  def ==(other_card)
+    self.value == other_card.value
   end
 
   def <=>(other_card)
