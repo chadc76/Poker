@@ -52,4 +52,23 @@ describe Player do
       end.to change { player.bankroll}.by(40)
     end
   end
+
+  describe '#return_cards' do
+    let(:hand) { double('hand') }
+    let(:cards) { double('cards') }
+
+    before(:each) do 
+      player.deal_in(hand)
+      allow(hand).to receive(:cards).and_return(cards)
+    end
+
+    it 'should return the players cards' do 
+      expect(player.return_cards).to eq(cards)
+    end
+
+    it 'should set the players gand to nil' do 
+      player.return_cards
+      expect(player.hand).to be(nil)
+    end
+  end
 end
