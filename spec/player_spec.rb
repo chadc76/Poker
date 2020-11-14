@@ -71,4 +71,20 @@ describe Player do
       expect(player.hand).to be(nil)
     end
   end
+
+  describe '#fold' do
+    it 'should set folded? to true' do
+      player.fold
+      expect(player).to be_folded
+    end
+  end
+
+  describe '#unfold' do
+    it 'should set folded? to false' do
+      player.unfold
+      expect(player).to_not be_folded
+    end
+  end
+
+
 end
