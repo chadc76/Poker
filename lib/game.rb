@@ -15,4 +15,13 @@ class Game
       @players << Player.new(bankroll)
     end
   end
+
+  def game_over?
+    bankrolls = @players.map(&:bankroll)
+    money_left = 0
+    bankrolls.each do |bankroll|
+      money_left += 1 if bankroll > 0
+    end
+    money_left == 1
+  end
 end
