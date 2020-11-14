@@ -24,4 +24,11 @@ class Game
     end
     money_left == 1
   end
+
+  def deal_cards
+    hands = @deck.deal_hand(@players.count, @players.map(&:bankroll))
+    hands.count.times do |i|
+      @players[i].deal_in(hands[i]) unless hands[i].nil?
+    end
+  end
 end
