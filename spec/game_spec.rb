@@ -71,4 +71,15 @@ describe Game do
       expect(game.players.last.hand).to be_nil
     end
   end
+
+  describe '#add_to_pot' do
+    it 'should add a specific amount to the pot' do 
+      expect{ game.add_to_pot(100)}.to change {game.pot}.by(100)
+    end
+
+    it 'should return the amount added' do 
+      game.add_to_pot(100)
+      expect(game.add_to_pot(120)).to eq (120)
+    end
+  end
 end
