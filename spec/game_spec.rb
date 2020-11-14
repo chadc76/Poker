@@ -52,4 +52,23 @@ describe Game do
       expect(game).to be_game_over
     end
   end
+
+  describe '#deal_cards' do
+    before(:each) do 
+      game.add_players(5, 100)
+    end
+
+    it 'should give each player a full hand' do
+      game.deal_cards
+      expect(
+          game.players.all? { |player| player.hand }
+      ).to be(true)
+    end
+
+    it 'should not give a player a hand if the player has no money' do 
+      game.add_players(1, 0)
+      game.deal_cards
+      expect(game.players.last.hand).to be_nil
+    end
+  end
 end
