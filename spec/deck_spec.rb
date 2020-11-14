@@ -85,4 +85,27 @@ describe Deck do
       expect(deck.take(1)).to eq(more_cards[2..2])
     end
   end
+
+  describe '#deal_hand' do
+    let(:deck) { Deck.new }
+
+    it 'should deal a specified number of hands' do
+      hands = deck.deal_hand(5,[1,1,1,1,1])
+      expect(hands.length).to eq(5)
+      expect(
+        hands.all? {|hand| hand.is_a?(Hand) }
+      ).to be(true)
+    end
+
+    it 'should take cards from the deck' do 
+      expect do 
+        deck.deal_hand(1,[1])
+      end.to change{ deck.count}.by(-5)
+    end
+
+    it 'should not deal cards to a player with 0 bankroll' do
+      hand = deck.deal_hand(1,[0])
+      expect(hand.last).to be_nil
+    end
+  end
 end
