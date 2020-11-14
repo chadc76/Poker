@@ -27,4 +27,11 @@ class Player
   def receive_winnings(money)
     @bankroll += money
   end
+
+  def return_cards
+    cards = hand.cards
+    @hand = nil
+    cards
+  end
+
 end
