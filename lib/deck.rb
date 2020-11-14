@@ -46,6 +46,9 @@ class Deck
         bankrolls[i] > 0 ? hands[i] << take(1) : hands[i] = nil
       end
     end
-    hands
+    hands.map do |hand|
+      next if hand.nil?
+      Hand.new(hand)
+    end
   end
 end
