@@ -44,4 +44,12 @@ describe Player do
       expect { player.take_bet(1000) }.to raise_error('not enough money')
     end
   end
+
+  describe '#receive_winnings' do
+    it 'should add winnings to bankroll' do 
+      expect do
+        player.receive_winnings(40)
+      end.to change { player.bankroll}.by(40)
+    end
+  end
 end
