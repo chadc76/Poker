@@ -22,6 +22,10 @@ class Hand
     old_cards
   end
 
+  def print_hand
+    puts @cards.map(&:to_s).join(" ")
+  end
+
   private
 
   def sort!

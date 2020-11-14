@@ -1,4 +1,5 @@
-require_relative './card'
+require_relative 'card.rb'
+require_relative 'hand.rb'
 
 class Deck
 
@@ -31,7 +32,7 @@ class Deck
   end
 
   def take(n)
-    raise "not enough cards" if n > @cards.count
+    raise "not enough cards" if n > count
     @cards.shift(n)
   end
 
@@ -43,7 +44,7 @@ class Deck
     hands = Array.new(n){Array.new}
     5.times do 
       (0..hands.length-1).each do |i|
-        bankrolls[i] > 0 ? hands[i] << take(1) : hands[i] = nil
+        bankrolls[i] > 0 ? hands[i] += take(1) : hands[i] = nil
       end
     end
     hands.map do |hand|

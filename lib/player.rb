@@ -5,11 +5,12 @@ class Player
     Player.new(bankroll)
   end
 
-  attr_reader :bankroll, :hand, :current_bet
+  attr_reader :bankroll, :hand, :current_bet, :name
 
-  def initialize(bankroll)
+  def initialize(bankroll, name)
     @bankroll = bankroll
     @current_bet = 0
+    @name = name
   end
 
   def deal_in(hand)
@@ -48,7 +49,7 @@ class Player
     amount = bet - current_bet
     raise 'not enough money' unless amount <= bankroll
     @bankroll -= amount
-    @current_bet = amount
+    @current_bet = bet
     amount
   end
 
