@@ -23,4 +23,8 @@ class Player
     @current_bet = amount
     amount
   end
+
+  def receive_winnings(money)
+    @bankroll += money
+  end
 end
