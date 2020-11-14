@@ -31,4 +31,9 @@ class Game
       @players[i].deal_in(hands[i]) unless hands[i].nil?
     end
   end
+
+  def add_to_pot(amount)
+    @pot += amount
+    amount
+  end
 end
