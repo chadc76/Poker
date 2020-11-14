@@ -53,10 +53,6 @@ class Card
     string.colorize(:color => color, :background => :white)
   end
 
-  def ==(other_card)
-    self.value == other_card.value
-  end
-
   def <=>(other_card)
     return -1 if Card.values.index(value) < Card.values.index(other_card.value)
     return 1 if Card.values.index(value) > Card.values.index(other_card.value)

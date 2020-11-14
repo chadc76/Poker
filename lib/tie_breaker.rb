@@ -25,10 +25,7 @@ module TieBreaker
     (0..4).each do |i|
       own_card = self_reverse[i]
       other_card = other_hand_reverse[i]
-      p own_card
-      p other_card
       result = own_card <=> other_card
-      p result
       return result unless result == 0
     end
     0
@@ -36,13 +33,10 @@ module TieBreaker
 
   def compare_set_then_high_card(n, other_hand)
     set_card, other_set_card = set_card(n), other_hand.set_card(n)
-    p set_card
-    p other_set_card
-    p set_card == other_set_card
-    if set_card == other_set_card
+    if set_card.value == other_set_card.value
       compare_high_card(other_hand)
     else
-      p set_card <=> other_set_card
+      set_card <=> other_set_card
     end
   end
 
@@ -55,7 +49,7 @@ module TieBreaker
   end
 
   def high_pair
-    if pairs[1][0] < pairs[0][0]
+    if pairs[1][0].value < pairs[0][0].value
       pairs[0]
     else
       pairs[1]
@@ -63,7 +57,7 @@ module TieBreaker
   end
 
   def low_pair
-    if pairs[0][0] < pairs[1][0]
+    if pairs[0][0].value < pairs[1][0].value
       pairs[0]
     else
       pairs[1]
