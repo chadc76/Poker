@@ -49,6 +49,7 @@ class Game
     @pot = 0
     return_cards
     @round_one = false
+    @players.rotate!(-1)
   end
 
   def return_cards
