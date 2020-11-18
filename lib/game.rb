@@ -50,6 +50,7 @@ class Game
     return_cards
     @round_one = false
     @players.rotate!(-1)
+    remove_losers
   end
 
   def return_cards
@@ -197,6 +198,10 @@ class Game
   def end_game
     print_players_and_bankrolls
     puts "the game is over"
+  end
+  
+  def remove_losers
+    @players.reject!{|player| player.bankroll == 0}
   end
 end
 
