@@ -1,3 +1,5 @@
+require_relative 'hand.rb'
+
 class Player
   include Comparable
 
@@ -6,11 +8,14 @@ class Player
   end
 
   attr_reader :bankroll, :hand, :current_bet, :name
+  attr_accessor :board, :best_hand
 
   def initialize(bankroll, name)
     @bankroll = bankroll
     @current_bet = 0
     @name = name
+    @board = nil
+    @best_hand = nil
   end
 
   def deal_in(hand)
@@ -34,15 +39,11 @@ class Player
     print "Bet (bankroll: $#{bankroll}) > "
     bet = gets.chomp.to_i
     raise 'not enough money' unless bet <= bankroll
+    if (bankroll - bet) < 10
+      puts "this bet leaves you with out a big blind, you must go all in"
+      return bankroll
+    end
     bet
-  end
-
-  def get_cards_to_trade
-    print "Cards to trade? (ex. '1, 4, 5') > "
-    card_indices = gets.chomp.split(', ').map(&:to_i)
-    raise 'cannot trade more than three cards' unless card_indices.count <= 3
-    puts
-    card_indices.map { |i| hand.cards[i - 1] }
   end
 
   def take_bet(bet)
@@ -75,16 +76,36 @@ class Player
     @folded
   end
 
-  def trade_cards(old_cards, new_cards)
-    hand.trade_cards(old_cards, new_cards)
-  end
-
   def <=>(other_player)
-    hand <=> other_player.hand
+    best_hand <=> other_player.best_hand
   end
 
   def reset_current_bet
     @current_bet = 0
+  end
+
+  def set_board(cards)
+    @board = cards
+  end
+
+  def possible_hands
+    current_hand = @hand.cards
+    seven_cards = @board += current_hand
+    all_hands = @board.combination(5).to_a
+    all_hands.map { |hand| Hand.new(hand)}      
+  end
+
+  def set_best_hand(hand)
+    @best_hand = hand
+  end
+
+  def print_best_hand
+    puts @best_hand.cards.map(&:to_s).join(" ")
+  end
+
+  def reset
+    @board = nil
+    @best_hand = nil
   end
 
 end

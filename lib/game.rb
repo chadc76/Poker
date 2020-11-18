@@ -1,14 +1,17 @@
 require_relative 'player.rb'
 require_relative 'deck.rb'
+require 'colorize'
 
 class Game
-  attr_reader :pot, :deck, :players
+  attr_reader :pot, :deck, :players, :board, :round_one 
 
   def initialize
+    @board = []
     @pot = 0
     @deck = Deck.new
     @players = []
     @round_one = true
+    @round_of_betting = 1
     @first_round_of_betting = true
   end
 
@@ -31,30 +34,41 @@ class Game
     @players.rotate!(2)
     system("clear")
     take_bets
-    @players.rotate!(4)
+    @players.rotate!(-2)
     system("clear")
-    trade_cards
+    flop
     system("clear")
-    take_bets
+    take_bets unless all_in
+    turn
+    take_bets unless all_in
+    river
+    take_bets unless all_in
     end_round
   end
 
   def end_round
+    get_best_hands
     show_hands
     puts 
     puts "WINNER!"
-    winner.hand.print_hand 
-    puts "#{winner.name} wins $#{pot} with a #{winner.hand.rank}"
+    winner.print_best_hand 
+    puts "#{winner.name} wins $#{pot} with a #{winner.best_hand.rank}"
     winner.receive_winnings(pot)
     @pot = 0
     return_cards
+    @players.each(&:reset)
     @round_one = false
+    @round_of_betting = 1
+    @first_round_of_betting =  @round_of_betting == 1 ? true : false
     @players.rotate!(-1)
     remove_losers
   end
 
   def return_cards
     @players.each { |player| @deck.return(player.return_cards) }
+    @deck.return(@deck.burnt)
+    @deck.return(@board)
+    @board = []
   end
 
   def winner
@@ -62,37 +76,29 @@ class Game
   end
 
   def show_hands
+    puts "Board:"
+    print_board
     puts "HANDS:"
     players.each do |player|
       next if player.folded?
-      puts "#{player.name}:".ljust(12) + "   #{player.hand.rank})"
+      puts "#{player.name}:".ljust(12) + "   #{player.best_hand.rank})"
       player.hand.print_hand
+      player.print_best_hand
     end
+    true
   end 
-
-  def trade_cards
-    @players.each_with_index do |player, i|
-      next if player.folded?
-      print "#{player.name}, which cards do you want to trade: "
-      player.hand.print_hand
-      cards = player.get_cards_to_trade
-      deck.return(cards)
-      player.trade_cards(cards, deck.take(cards.count))
-      system("clear")
-    end
-  end
 
   def take_bets
     high_bet = @first_round_of_betting ? 10 : 0
     no_raises = false
-    most_recent_better = high_bet == 0 ? nil : @players.last
+    most_recent_better = Player.new(0, "none")
     reset_current_bets unless @first_round_of_betting
     
     until no_raises
       no_raises = true
       players.each_with_index do |player, i|
         next if player.folded?
-        break if most_recent_better == player || round_over?
+        break if most_recent_better.name == player.name || round_over?
         display_status(i, high_bet)
 
         begin
@@ -119,7 +125,7 @@ class Game
         system("clear")
       end
     end
-    @first_round_of_betting =  @first_round_of_betting ? false : true
+    change_round
   end
 
   def display_status(index, high_bet)
@@ -131,18 +137,28 @@ class Game
       puts "#{player.name} has #{player.bankroll}"
     end
 
+    
     puts
     puts "Current player: #{@players[index].name}"
     puts "#{@players[index].name} has bet: $#{players[index].current_bet}"
     puts "The bet is at $#{high_bet}"
     puts "#{@players[index].name}'s hand:"
     @players[index].hand.print_hand
+    puts "the board is:"
+    print_board
+  end
+
+  def change_round
+    @round_of_betting += 1
+    @first_round_of_betting =  @round_of_betting == 1 ? true : false
   end
 
   def ante_up
     puts "Okay, let's ante up!"
-    add_to_pot(@players[0].take_bet(5))
-    add_to_pot(@players[1].take_bet(10))
+    small_blind = @players[0].take_bet(5)
+    add_to_pot(small_blind)
+    big_blind = @players[1].take_bet(10)
+    add_to_pot(big_blind)
     puts "15 was added to the pot"
     sleep(1)
     puts "Let's deal!"
@@ -199,10 +215,63 @@ class Game
     print_players_and_bankrolls
     puts "the game is over"
   end
+
+  def add_to_board(cards)
+    @board += cards
+  end
+
+  def flop
+    current_flop = @deck.flop
+    add_to_board(current_flop)
+    puts "Here's the flop..."
+    sleep(1)
+  end
+
+  def turn
+    current_turn = @deck.turn_or_river
+    add_to_board(current_turn)
+    puts "Here's the turn..."
+    sleep(1)
+  end
+
+  def river
+    current_river = @deck.turn_or_river
+    add_to_board(current_river)
+    puts "Here's the river..."
+    sleep(1)
+  end
+
+  def print_board
+    print @board.map(&:to_s).join(" ")
+    puts
+  end
+
+  def get_best_hands
+    @players.each do |player|
+      player.set_board(@board)
+      players_hand = find_best_hand(player.possible_hands)
+      player.set_best_hand(players_hand)
+    end
+  end
+
+  def find_best_hand(hands)
+    best = hands[0]
+    hands.each_with_index do |hand, i|
+      best = hand if  (hand <=> best) == 1
+    end
+    best
+  end
+
+  def all_in
+    players_all_in = @players.count{|player| !player.folded? && player.bankroll == 0 }
+    players_all_in > 0
+  end
+
   
   def remove_losers
     @players.reject!{|player| player.bankroll == 0}
   end
+
 end
 
 
